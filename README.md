@@ -1,25 +1,103 @@
-# Illustration Sharing Web App
+# 概要（Overview）
 
-This is a web application where users can upload, share, and browse illustrations.
-It includes user authentication, image posting, and search functionality.
+本リポジトリは、Webアプリケーション開発の学習および技術理解の整理を目的として作成したサンプルアプリケーションです。
+Flask を用いた最小構成のWebアプリをベースに、責務分離・認証認可・設計の考え方を段階的に理解することを主眼としています。
 
-## Features
-- User registration and login
-- Illustration upload with title and description
-- Public timeline of posts
-- Search by title or content
-- Secure password hashing
+本コードには生成AI（ChatGPT 等）を活用して作成した部分が含まれますが、
+そのまま利用するのではなく「なぜこの構造になっているのかを理解し、説明できる状態にする」ことを目標としています。
 
-## Tech Stack
-- Python (Flask)
-- SQLite
-- HTML/CSS
-- Jinja2 Templates
+---
 
-## Setup
+## 目的（Purpose）
 
-```bash
-git clone https://github.com/yourname/illustration-sharing-webapp.git
-cd illustration-sharing-webapp
-pip install -r requirements.txt
-flask run
+- Webアプリケーションの基本構造を理解する
+- Flask におけるルーティング・認証・DB操作の役割分担を把握する
+- app.py に責務が集中しすぎる問題を認識し、分割設計を検討できるようになる
+- 面接やレビューの場で「設計意図」を説明できるレベルに到達する
+
+---
+
+## 想定ユーザー（Target）
+
+- **一般ユーザー** … 新規登録・ログイン、投稿の閲覧・いいね
+- **管理者ユーザー** … 将来的に複数管理者を想定（現時点では `username == "admin"` で投稿削除が可能）
+
+※ 現時点では学習目的のため、権限設計やUIは簡易的な実装に留めています。
+
+---
+
+## 主な機能
+
+- 新規登録・ログイン・ログアウト
+- 投稿一覧（`/`）・投稿詳細（`/post/<id>`）
+- 画像アップロード（拡張子チェック・Pillow 検証・サムネイル生成は `image_service.py` で実施）
+- いいね（トグル）
+- 投稿削除（投稿者本人または管理者のみ）
+
+---
+
+## 技術スタック（Tech Stack）
+
+- **Python**
+- **Flask** … ルーティング・テンプレート
+- **Flask-Login** … 認証・セッション
+- **Flask-WTF** … CSRF 保護
+- **SQLite** … 学習用途（`database.db` をルートに配置）
+- **Pillow** … 画像検証・サムネイル生成
+- **HTML / CSS** … 最小構成（Jinja2 テンプレート）
+
+※ 本番公開を想定する場合は、AWS（EC2 / RDS 等）への移行を想定しています。
+
+---
+
+## ディレクトリ構成（Structure）
+
+```
+.
+├── app.py              # アプリケーションのエントリーポイント（ルーティング・認証・DB操作）
+├── image_service.py    # 画像処理（拡張子チェック・Pillow verify・保存・サムネイル生成）
+├── generate_thumbs.py   # サムネイル一括生成用（任意）
+├── requirements.txt    # 依存パッケージ
+├── database.db         # SQLite DB（実行時に生成される場合あり）
+├── templates/          # HTML テンプレート（Jinja2）
+├── static/             # CSS・アップロード画像（uploads/・thumbs/）
+└── README.md
+```
+
+※ 画像処理は `image_service.py` に切り出し済みです。認証・DB操作・ビジネスロジックなどのさらなる分割は今後の検討事項です。
+
+---
+
+## 設計方針（Design Policy）
+
+1. **まず動くものを作る**
+2. その後「責務が混ざっていないか」「説明できない処理がないか」を見直す
+3. フレームワークの魔法に頼りすぎず、処理の流れを追えることを重視
+
+---
+
+## 生成AIの利用について（About AI-generated Code）
+
+本プロジェクトでは生成AIを活用していますが、
+
+- コピペで終わらせない
+- すべてのコードについて「何をしているか」を説明できる状態を目指す
+- 理解できていない部分は TODO やコメントとして明示
+
+という方針で進めています。
+
+---
+
+## 今後の課題（TODO）
+
+- app.py のさらなる責務分割（認証・DB・ルーティングの層分け）
+- 管理者権限の明確化（ロール設計など）
+- 本番環境を想定した設定分離（config）
+- セキュリティ観点の見直し（CSRF / セッション管理など）
+
+---
+
+## 注意事項（Note）
+
+本リポジトリは**学習目的**であり、
+そのまま本番環境での利用を想定したものではありません。
