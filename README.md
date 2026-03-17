@@ -1,6 +1,9 @@
 # 概要（Overview）
-<img width="400" alt="image" src="https://github.com/user-attachments/assets/3457452c-330f-45b1-b471-9444c1b51f02" />
-<img width="400" alt="image" src="https://github.com/user-attachments/assets/c6857cba-bdba-4508-894f-541d96842b86" />
+### プレビュー
+
+| トップ画面 | 投稿詳細 |
+| :---: | :---: |
+| <img src="https://github.com/user-attachments/assets/3457452c-330f-45b1-b471-9444c1b51f02" width="400"> | <img src="https://github.com/user-attachments/assets/c6857cba-bdba-4508-894f-541d96842b86" width="280"> |
 
 
 本リポジトリは、Flask で動作するシンプルなポートフォリオ投稿アプリのサンプルです。
