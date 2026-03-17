@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>投稿</h2>
+<form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>
+        タイトル
+        <input name="title" placeholder="タイトル" required>
+    </label>
+    <br>
+    <label>
+        本文（任意・全角140字以内）
+        <textarea name="body" placeholder="本文（任意・全角140字以内）" maxlength="140" rows="4" cols="40"></textarea>
+    </label>
+    <br>
+    <label>
+        画像
+        <input type="file" name="image" accept="image/*">
+    </label>
+    <br>
+    <button type="submit">投稿する</button>
+</form>
+{% endblock %}

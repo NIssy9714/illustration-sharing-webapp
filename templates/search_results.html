@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <h2>検索結果</h2>
+
+    {% if search_keyword %}
+        <p>タイトルに「{{ search_keyword|e }}」を含む投稿を表示しています。</p>
+    {% else %}
+        <p>検索キーワードが指定されていないため、すべての投稿を表示しています。</p>
+    {% endif %}
+
+    {% if posts %}
+        {% for post in posts %}
+        <article class="card">
+            <header>
+                <h2 class="post-title">
+                    <a href="{{ url_for('post', id=post['id']) }}">{{ post['title']|e }}</a>
+                </h2>
+            </header>
+            <a href="{{ url_for('post', id=post['id']) }}">
+                <figure>
+                    <img
+                        src="{{ url_for('static', filename=('uploads/thumbs/' + post['filename'])) }}"
+                        loading="lazy"
+                        alt="{{ post['title']|e }} の画像"
+                        onerror="this.onerror=null;this.src='{{ url_for('static', filename=('uploads/' + post['filename'])) }}';"
+                    >
+                </figure>
+            </a>
+            {% if post['body'] %}
+            <p class="post-body">{{ post['body']|e }}</p>
+            {% endif %}
+        </article>
+        {% endfor %}
+    {% else %}
+        <p>該当する投稿が見つかりませんでした。</p>
+    {% endif %}
+</div>
+
+{% endblock %}
+
