@@ -73,13 +73,89 @@
 pip install -r requirements.txt
 ```
 
-2. アプリを起動する
+2. Flask 版アプリを起動する
 
 ```bash
 python app.py
 ```
 
 3. ブラウザで `http://localhost:5000/` にアクセスする
+
+---
+
+## FastAPI 版（実務寄り構成）
+
+このリポジトリには、**環境変数で設定を管理**し、**PostgreSQL を前提**にした FastAPI 版（`fastapi_app/`）も同梱しています。
+APIキーやパスワード等をコード内に直書きせず、`.env` で注入する前提です。
+
+### 事前準備
+
+- `.env.example` をコピーして `.env` を作成し、値を設定してください（**実値はコミットしない**）
+
+### Docker で起動（おすすめ）
+
+※ Docker がインストールされている環境が必要です。
+
+```bash
+docker compose up --build
+```
+
+- API: `http://localhost:8000`
+- ヘルスチェック: `http://localhost:8000/healthz`
+- Swagger UI: `http://localhost:8000/docs`
+
+### ローカル起動（Dockerなし）
+
+```bash
+pip install -r requirements.txt
+uvicorn fastapi_app.app.main:app --reload --port 8000
+```
+
+### マイグレーション（Alembic）
+
+このリポジトリには **初回マイグレーション**（`fastapi_app/migrations/versions/0001_init.py`）を同梱しています。
+PostgreSQL を用意して `DATABASE_URL` を設定したうえで、次を実行してください。
+
+```bash
+alembic -c fastapi_app/alembic.ini upgrade head
+```
+
+（参考）モデルから自動生成したい場合（DBへ接続できる状態が必要）:
+
+```bash
+alembic -c fastapi_app/alembic.ini revision --autogenerate -m "init"
+alembic -c fastapi_app/alembic.ini upgrade head
+```
+
+### 認証API（最低限）
+
+- `POST /auth/register` : ユーザー作成
+- `POST /auth/login` : トークン発行（Bearer）
+
+例:
+
+```bash
+curl -X POST http://localhost:8000/auth/register ^
+  -H "Content-Type: application/json" ^
+  -d "{\"username\":\"test\",\"password\":\"password123\"}"
+```
+
+```bash
+curl -X POST http://localhost:8000/auth/login ^
+  -H "Content-Type: application/json" ^
+  -d "{\"username\":\"test\",\"password\":\"password123\"}"
+```
+
+---
+
+## テスト（pytest）
+
+FastAPI 版のAPIフロー（登録→ログイン→投稿→いいね→削除）を、SQLiteインメモリDBで自動テストします。
+
+```bash
+pip install -r requirements.txt
+pytest -q
+```
 
 ---
 
